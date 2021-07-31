@@ -12,9 +12,15 @@ from .voting import render_artwork, start_voting
 ARTIST_OPTION = option("The author of the artwork.", required=True)
 ADMIN_PERMS = allow_roles(ADMIN_ROLE_ID)
 
+manage_artwork = client.group(
+    "artwork",
+    "Commands for managing artwork.",
+    default_permission=False,
+    permissions=ADMIN_PERMS,
+)
 
-@ADMIN_PERMS
-@client.command(default_permission=False)
+
+@manage_artwork.subcommand()
 async def upload(
     interaction: Interaction,
     artist: Member = ARTIST_OPTION,
@@ -35,32 +41,39 @@ async def upload(
         message = f"Warning: overwriting existing artwork for {artist}."
     else:
         message = f"Artwork saved for {artist}:"
-    await interaction.response.send_message(
-        message, embed=render_artwork(artwork), ephemeral=True
-    )
+    await interaction.response.send_message(message, embed=render_artwork(artwork))
 
 
-@ADMIN_PERMS
-@client.command(default_permission=False)
+@manage_artwork.subcommand()
 async def delete(interaction: Interaction, artist: Member = ARTIST_OPTION):
     """Delete a user's artwork from the database."""
     if not (artwork := Artwork.get_or_none(Artwork.artist == artist.id)):
         raise ValueError(f"No artwork found for {artist}.")
     artwork.delete_instance()
-    await interaction.response.send_message(
-        f"Artwork deleted for {artist}.", ephemeral=True
-    )
+    await interaction.response.send_message(f"Artwork deleted for {artist}.")
 
 
-@ADMIN_PERMS
-@client.command(default_permission=False)
-async def artwork(interaction: Interaction, artist: Member = ARTIST_OPTION):
+@manage_artwork.subcommand()
+async def view(interaction: Interaction, artist: Member = ARTIST_OPTION):
     """View a user's artwork."""
     if not (artwork := Artwork.get_or_none(Artwork.artist == artist.id)):
         raise ValueError(f"No artwork found for {artist}.")
     await interaction.response.send_message(
         embed=render_artwork(artwork), ephemeral=True
     )
+
+
+@manage_artwork.subcommand()
+async def list(interaction: Interaction):
+    """List all users with uploaded artwork."""
+    artists = ", ".join(f"<@{artwork.artist}>" for artwork in Artwork.select())
+    if not artists:
+        await interaction.response.send_message("No artwork has been uploaded.")
+    else:
+        await interaction.response.send_message(
+            f"Artwork has been uploaded from the following artists: {artists}.",
+            ephemeral=True,
+        )
 
 
 @client.command()
