@@ -1,0 +1,1 @@
+"""Polympics art voting bot."""
