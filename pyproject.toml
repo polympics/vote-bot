@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "polympics-vote"
-version = "0.2.0"
+version = "0.3.0"
 description = "An interaction-based Discord bot for artwork voting in the Polympics."
 authors = ["Artemis <artemis@artemisdev.xyz>"]
 license = "MIT"

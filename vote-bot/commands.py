@@ -63,8 +63,8 @@ async def view(interaction: Interaction, artist: Member = ARTIST_OPTION):
     )
 
 
-@manage_artwork.subcommand()
-async def list(interaction: Interaction):
+@manage_artwork.subcommand(name="list")
+async def list_(interaction: Interaction):
     """List all users with uploaded artwork."""
     artists = ", ".join(f"<@{artwork.artist}>" for artwork in Artwork.select())
     if not artists:

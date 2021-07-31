@@ -40,6 +40,28 @@ class VotingView(View):
             embed=render_artwork(self.artwork), view=self, ephemeral=True
         )
 
+    @discord.ui.button(
+        label="Skip",
+        style=discord.ButtonStyle.red,
+        emoji="\N{BLACK RIGHTWARDS ARROW}",
+        row=2,
+    )
+    async def skip(self, button: Button, interaction: discord.Interaction):
+        """Skip this artwork."""
+        await start_voting(interaction)
+
+    @discord.ui.button(
+        label="Stop Voting",
+        style=discord.ButtonStyle.red,
+        emoji="\N{OCTAGONAL SIGN}",
+        row=2,
+    )
+    async def stop(self, button: Button, interaction: discord.Interaction):
+        """End the voting flow."""
+        # This doesn't actually do anything - the user can still use other
+        # buttons to continue voting. Mainly here to avoid "how do I stop voting"
+        # questions - though you can just *stop*.
+
 
 class VoteButton(Button):
     """Button that allows the user to vote on an artwork."""
