@@ -37,7 +37,7 @@ class VotingView(View):
     async def setup(self):
         """Send a message with the artwork and view."""
         await self.interaction.response.send_message(
-            embed=render_artwork(self.artwork), view=self, ephemeral=True
+            embed=render_artwork(self.artwork), view=self,
         )
 
     @discord.ui.button(
