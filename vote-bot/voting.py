@@ -48,6 +48,8 @@ class VotingView(View):
     )
     async def skip(self, button: Button, interaction: discord.Interaction):
         """Skip this artwork."""
+        if interaction.user.id != self.user.id:
+            return
         await start_voting(interaction)
 
     @discord.ui.button(
