@@ -72,10 +72,7 @@ class VoteButton(Button):
 
     def __init__(self, score: int):
         """Create a new vote button."""
-        super().__init__(
-            emoji=f"{score}\N{COMBINING ENCLOSING KEYCAP}",
-            style=discord.ButtonStyle.secondary,
-        )
+        super().__init__(emoji=f"{score}", style=discord.ButtonStyle.secondary)
         self.score = score
 
     async def callback(self, interaction: discord.Interaction):
