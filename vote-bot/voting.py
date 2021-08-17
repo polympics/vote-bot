@@ -33,12 +33,19 @@ class VotingView(View):
         self.artwork = artwork
         self.user = interaction.user
         self.interaction = interaction
+        self.next_artwork_sent = False
 
     async def setup(self):
         """Send a message with the artwork and view."""
         await self.interaction.response.send_message(
             embed=render_artwork(self.artwork), view=self,
         )
+
+    async def send_next(self, interaction: discord.Interaction):
+        """Send the next piece of art to vote on."""
+        if not self.next_artwork_sent:
+            self.next_artwork_sent = True
+            await start_voting(interaction)
 
     @discord.ui.button(
         label="Skip",
@@ -48,9 +55,7 @@ class VotingView(View):
     )
     async def skip(self, button: Button, interaction: discord.Interaction):
         """Skip this artwork."""
-        if interaction.user.id != self.user.id:
-            return
-        await start_voting(interaction)
+        await self.send_next(interaction)
 
     @discord.ui.button(
         label="Stop Voting",
@@ -80,7 +85,7 @@ class VoteButton(Button):
         if interaction.user.id != self.view.user.id:
             return
         self.view.artwork.vote(self.view.interaction.user.id, self.score)
-        await start_voting(interaction)
+        await self.view.send_next(interaction)
 
 
 async def start_voting(interaction: discord.Interaction):
