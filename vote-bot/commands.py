@@ -111,7 +111,7 @@ async def raffle(interaction: Interaction):
 @client.command(default_permission=False)
 async def winner(interaction: Interaction):
     """Get the winning artwork, and runners up."""
-    rating = peewee.fn.Avg(Vote.rating).alias("rating")
+    rating = peewee.fn.Avg(Vote.rating, coerce=False).alias("rating")
     votes = peewee.fn.Count(Vote.id).alias("votes")
     leaderboard = list(
         Artwork.select(Artwork, rating, votes)
